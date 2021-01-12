@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/X.h>
 #include <ctype.h>
 #include <locale.h>
 #include <math.h>
@@ -634,32 +635,34 @@ keypress(XKeyEvent *ev)
 		break;
 	}
 
+     /* My HotKey */
+
 	if (ev->state & ControlMask) {
 		switch(ksym) {
-		case XK_a: ksym = XK_Home;      break;
-		case XK_b: ksym = XK_Left;      break;
-		case XK_c: ksym = XK_Escape;    break;
-		case XK_d: ksym = XK_Delete;    break;
-		case XK_e: ksym = XK_End;       break;
-		case XK_f: ksym = XK_Right;     break;
-		case XK_g: ksym = XK_Escape;    break;
-		case XK_h: ksym = XK_BackSpace; break;
-		case XK_i: ksym = XK_Tab;       break;
+		case XK_l: ksym = XK_Home;      break; /* C-l -> home */
+		case XK_u: ksym = XK_End;       break; /* C-u -> end */
+		case XK_c: ksym = XK_Escape;    break; /* C-c -> esc */
+		case XK_g: ksym = XK_Escape;    break; /* C-g -> esc */
+        case XK_h: ksym = XK_BackSpace; break; /* C-h -> backspace */
+		case XK_d: ksym = XK_Delete;    break; /* C-d -> delete */
+        case XK_i: ksym = XK_Tab;       break; /* C-i -> tab */
 		case XK_j: /* fallthrough */
 		case XK_J: /* fallthrough */
-		case XK_m: /* fallthrough */
+		/* case XK_m: [> fallthrough <] */
 		case XK_M: ksym = XK_Return; ev->state &= ~ControlMask; break;
-		case XK_n: ksym = XK_Down;      break;
-		case XK_p: ksym = XK_Up;        break;
+		case XK_n: ksym = XK_Down;      break; /* C-n -> down */
+		case XK_e: ksym = XK_Up;        break; /* C-e -> up */
+        case XK_H: ksym = XK_Left; break; /* C-S-h -> left */
+        case XK_I: ksym = XK_Right; break; /* C-S-i -> right */
 
-		case XK_k: /* delete right */
+		case XK_m: /* delete right */
 			text[cursor] = '\0';
 			match();
 			break;
-		case XK_u: /* delete left */
+		case XK_k: /* delete left */
 			insert(NULL, 0 - cursor);
 			break;
-		case XK_w: /* delete word */
+		case XK_b: /* delete word */
 			while (cursor > 0 && strchr(worddelimiters, text[nextrune(-1)]))
 				insert(NULL, nextrune(-1) - cursor);
 			while (cursor > 0 && !strchr(worddelimiters, text[nextrune(-1)]))
@@ -698,7 +701,7 @@ keypress(XKeyEvent *ev)
 			exit(1);
 		default:
 			return;
-		}
+        }	
 	} else if (ev->state & Mod1Mask) {
 		switch(ksym) {
 		case XK_b:
